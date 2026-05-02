@@ -10,38 +10,48 @@
 }
 
 body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: system-ui;
     background-color: var(--bg);
     color: var(--text);
     margin: 0;
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
+    padding: 40px;
 }
 
 .container {
-    width: 100%;
     max-width: 1100px;
+    margin: auto;
     background: var(--card-bg);
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    border: 1px solid var(--border);
 }
 
 h1 {
-    font-size: 1.8rem;
-    margin-bottom: 25px;
     text-align: center;
-    background: linear-gradient(to right, #818cf8, #22d3ee);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.tab.active {
+    background: var(--primary);
 }
 
 .grid-layout {
     display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 30px;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
 }
 
 .input-section {
@@ -50,78 +60,95 @@ h1 {
     gap: 15px;
 }
 
-label { font-size: 0.9rem; color: #94a3b8; }
-
-input, textarea {
+.card {
     background: #0f172a;
-    border: 1px solid var(--border);
-    color: white;
-    padding: 12px;
-    border-radius: 8px;
-    font-family: monospace;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+textarea, input {
     width: 100%;
-    box-sizing: border-box;
+    margin-top: 5px;
+    padding: 10px;
+    background: #020617;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
 }
 
 button {
     background: var(--primary);
-    color: white;
     border: none;
-    padding: 14px;
+    padding: 12px;
     border-radius: 8px;
-    font-weight: 600;
+    color: white;
     cursor: pointer;
-    transition: all 0.2s;
 }
-
-button:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
 .table-container {
-    overflow-x: auto;
-    border-radius: 12px;
-    background: #0f172a;
-    padding: 10px;
+    background: #020617;
+    border-radius: 10px;
+    padding: 15px;
 }
 
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 4px;
+.placeholder {
+    text-align: center;
+    opacity: 0.6;
+    margin-top: 50px;
 }
 
-th { background: #1e293b; color: var(--accent); font-size: 0.8rem; padding: 10px; }
-
-td {
-    width: 40px;
-    height: 35px;
-    background: #1e293b;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
-
-.current {
-    outline: 2px solid var(--accent);
-    background: #334155 !important;
-    transform: scale(1.1);
-    z-index: 10;
-}
-
-.highlight { background: #1e293b; border: 1px solid var(--border); }
-
-.selected-item {
-    background: var(--success) !important;
-    color: white;
-    font-weight: bold;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-}
-
-.legend {
+.result-box {
     margin-top: 20px;
-    display: flex;
-    gap: 20px;
-    font-size: 0.8rem;
+    padding: 15px;
+    background: #1e293b;
+    border-radius: 10px;
 }
 
-.legend-item { display: flex; align-items: center; gap: 8px; }
-.dot { width: 12px; height: 12px; border-radius: 3px; }
+.result-box h3 {
+    margin: 0 0 10px 0;
+}
+
+.item-list {
+    margin-top: 10px;
+    padding-left: 15px;
+}
+
+.item-list li {
+    margin-bottom: 5px;
+}
+
+.cell-highlight {
+    background: #22d3ee !important;
+    color: black;
+}
+
+.cell-active {
+    background: #6366f1 !important;
+}
+
+.fade {
+    animation: fade 0.3s ease;
+}
+
+@keyframes fade {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+select {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    background: #020617;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+#pause-btn {
+    background: #ef4444;
+}
+
+#resume-btn {
+    background: #22c55e;
+}
