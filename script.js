@@ -42,6 +42,12 @@ startBtn.addEventListener("click", async () => {
     else if (currentTab === "dp") {
     await visualizeDP(items, capacity);
 }
+else if (currentTab === "greedy") {
+    await visualizeGreedy(items, capacity);
+}
+else if (currentTab === "branch") {
+    await visualizeBranchAndBound(items, capacity);
+}
     else {
         document.getElementById("results-area").innerHTML =
             `<p></p>`;
@@ -212,21 +218,8 @@ async function visualizeDP(items, capacity) {
         }
     }
 
-    //     clearHighlights();
-    // let w = capacity;
-    // let selected = [];
 
-
-    // for (let i = n; i > 0; i--) {
-    //     if (dp[i][w] !== dp[i - 1][w]) {
-    //            highlightSelected(i, w);
-    //         selected.push(i - 1);
-    //         await sleep(300);
-    //         w -= items[i - 1].weight;
-    //     }
-    // }
-
-    clearHighlights(); // очищаємо старі підсвітки
+    clearHighlights();
 
 let w = capacity;
 let selected = [];
@@ -288,4 +281,122 @@ function highlightSelected(i, w) {
          cell.classList.remove("cell-highlight");
         cell.classList.add("cell-selected");
     }
+}
+
+async function visualizeGreedy(items, capacity) {
+    const output = document.getElementById("results-area");
+    output.innerHTML = "";
+
+    let itemsWithRatio = items.map((item, index) => ({
+        ...item,
+        index,
+        ratio: item.value / item.weight
+    }));
+
+    itemsWithRatio.sort((a, b) => b.ratio - a.ratio);
+
+    let totalWeight = 0;
+    let totalValue = 0;
+    let selected = [];
+
+    for (let item of itemsWithRatio) {
+
+        output.innerHTML = `
+            <div class="result-box fade">
+                <p>Розглядаємо предмет ${item.index + 1}</p>
+                <p>ratio = ${item.ratio.toFixed(2)}</p>
+                <p>Поточна вага: ${totalWeight}</p>
+            </div>
+        `;
+
+        await sleep(400);
+
+        if (totalWeight + item.weight <= capacity) {
+            totalWeight += item.weight;
+            totalValue += item.value;
+            selected.push(item.index);
+
+            output.innerHTML += `<p style="color:#10b981">✔ Беремо</p>`;
+        } else {
+            output.innerHTML += `<p style="color:#ef4444">✖ Пропускаємо</p>`;
+        }
+
+        await sleep(400);
+    }
+
+    renderResult({
+        maxValue: totalValue,
+        selected: selected
+    });
+}
+
+async function visualizeBranchAndBound(items, capacity) {
+    const output = document.getElementById("results-area");
+
+    let maxValue = 0;
+    let bestSet = [];
+
+    function bound(level, weight, value) {
+        let boundValue = value;
+        let totalWeight = weight;
+
+        for (let i = level; i < items.length; i++) {
+            if (totalWeight + items[i].weight <= capacity) {
+                totalWeight += items[i].weight;
+                boundValue += items[i].value;
+            } else {
+                break;
+            }
+        }
+
+        return boundValue;
+    }
+
+    async function dfs(level, weight, value, chosen) {
+
+        output.innerHTML = `
+            <div class="result-box fade">
+                <p>Гілка: рівень ${level}</p>
+                <p>Вага: ${weight}, Цінність: ${value}</p>
+            </div>
+        `;
+
+        await sleep(300);
+
+        if (weight <= capacity && value > maxValue) {
+            maxValue = value;
+            bestSet = [...chosen];
+        }
+
+        if (level >= items.length) return;
+
+        let b = bound(level, weight, value);
+
+        if (b < maxValue) {
+            output.innerHTML += `<p style="color:#ef4444">✂ Відсічення</p>`;
+            await sleep(300);
+            return;
+        }
+
+        await dfs(
+            level + 1,
+            weight + items[level].weight,
+            value + items[level].value,
+            [...chosen, level]
+        );
+
+        await dfs(
+            level + 1,
+            weight,
+            value,
+            chosen
+        );
+    }
+
+    await dfs(0, 0, 0, []);
+
+    renderResult({
+        maxValue: maxValue,
+        selected: bestSet
+    });
 }
