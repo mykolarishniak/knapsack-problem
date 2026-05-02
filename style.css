@@ -1,0 +1,127 @@
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text: #f8fafc;
+    --border: #334155;
+    --accent: #22d3ee;
+    --success: #10b981;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    text-align: center;
+    background: linear-gradient(to right, #818cf8, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+}
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label { font-size: 0.9rem; color: #94a3b8; }
+
+input, textarea {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: monospace;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    background: #0f172a;
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 4px;
+}
+
+th { background: #1e293b; color: var(--accent); font-size: 0.8rem; padding: 10px; }
+
+td {
+    width: 40px;
+    height: 35px;
+    background: #1e293b;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.current {
+    outline: 2px solid var(--accent);
+    background: #334155 !important;
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.highlight { background: #1e293b; border: 1px solid var(--border); }
+
+.selected-item {
+    background: var(--success) !important;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.legend {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    font-size: 0.8rem;
+}
+
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 3px; }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Knapsack DP Solver - Variant 3</title>
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Моделювання задачі «Рюкзак»</h1>
+
+            <div class="grid-layout">
+                <div class="input-section">
+                    <div class="card">
+                        <label>Максимальна вага (W)</label>
+                        <input type="number" id="capacity" value="12">
+                    </div>
+
+                    <div class="card">
+                        <label>Предмети (Вага, Цінність)</label>
+                        <textarea id="items-data" rows="8">1, 2
+2, 4
+3, 5
+2, 3
+2, 7
+1, 6</textarea>
+                        <small>Кожен рядок: вага, цінність</small>
+                    </div>
+
+                    <button id="start-btn">🚀 Почати розрахунок</button>
+
+                    <div class="legend card">
+                        <div class="legend-item"><span class="dot process"></span> Обчислення</div>
+                        <div class="legend-item"><span class="dot success"></span> В рюкзаку</div>
+                        <div class="legend-item"><span class="dot default"></span> Оброблено</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div id="results-area">
+                        <div class="placeholder">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+
+</html>
