@@ -176,12 +176,41 @@ async function visualizeRecursive(items, capacity) {
 }
 
 function renderResult(result) {
-    const items = parseItems();
+    // const items = parseItems();
+
+    // let html = `
+    //     <div class="result-box">
+    //         <h3>Результат</h3>
+    //         <p><b>Максимальна цінність:</b> ${result.maxValue}</p>
+    //         <ul>
+    // `;
+
+    // result.selected.forEach(i => {
+    //     html += `<li>Предмет ${i + 1} (w=${items[i].weight}, v=${items[i].value})</li>`;
+    // });
+
+    // html += `</ul></div>`;
+
+    // document.getElementById("results-area").innerHTML += html;
+     const items = parseItems();
+
+    let totalWeight = 0;
+
+    result.selected.forEach(i => {
+        totalWeight += items[i].weight;
+    });
+
+    const capacity = parseInt(document.getElementById("capacity").value);
+    const isValid = totalWeight <= capacity;
 
     let html = `
         <div class="result-box">
             <h3>Результат</h3>
             <p><b>Максимальна цінність:</b> ${result.maxValue}</p>
+            <p><b>Загальна вага:</b> ${totalWeight} / ${capacity}</p>
+            <p style="color:${isValid ? '#10b981' : '#ef4444'}">
+                ${isValid ? '✔ Не перевищує обмеження' : '✖ Перевищено вагу!'}
+            </p>
             <ul>
     `;
 
