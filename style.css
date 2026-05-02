@@ -181,3 +181,63 @@ td {
     background: #10b981 !important;
     color: black;
 }
+
+.tree {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: system-ui;
+}
+
+.node {
+    display: inline-block;
+    min-width: 120px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #1e293b;
+    border: 1px solid var(--border);
+    transition: 0.3s;
+    position: relative;
+}
+
+.node-content {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+}
+
+.node-level {
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+.node.active {
+    border-color: #60a5fa;
+    box-shadow: 0 0 10px #60a5fa55;
+}
+
+.node.selected {
+    border-color: #10b981;
+    background: #064e3b;
+}
+
+.node.pruned {
+    border-color: #ef4444;
+    background: #450a0a;
+    opacity: 0.6;
+}
+
+.node.fade-in {
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}

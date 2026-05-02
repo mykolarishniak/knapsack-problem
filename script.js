@@ -109,32 +109,62 @@ async function visualizeBruteForce(items, capacity) {
 async function visualizeRecursive(items, capacity) {
     const output = document.getElementById("results-area");
 
-    async function helper(n, w) {
-        output.innerHTML = `
-            <div class="result-box fade">
-                <p>Рекурсія: n=${n}, w=${w}</p>
+    output.innerHTML = `<div class="tree" id="tree"></div>`;
+    const tree = document.getElementById("tree");
+
+    function createNode(level, weight, value, state = "") {
+        const node = document.createElement("div");
+        node.className = `node fade-in ${state}`;
+        node.style.marginLeft = `${level * 40}px`;
+
+        node.innerHTML = `
+            <div class="node-content">
+                <div class="node-level">Рівень ${level}</div>
+                <div>w: ${weight}</div>
+                <div>v: ${value}</div>
             </div>
         `;
 
+        tree.appendChild(node);
+        return node;
+    }
+
+    async function helper(n, w, level = 0) {
+
+        const node = createNode(level, w, 0, "active");
         await sleep(300);
 
         if (n === 0 || w === 0) {
+            node.classList.remove("active");
             return { value: 0, items: [] };
         }
 
         if (items[n - 1].weight > w) {
-            return await helper(n - 1, w);
+            node.classList.remove("active");
+            return await helper(n - 1, w, level + 1);
         }
 
-        let exclude = await helper(n - 1, w);
-        let include = await helper(n - 1, w - items[n - 1].weight);
+        let exclude = await helper(n - 1, w, level + 1);
+
+        let include = await helper(
+            n - 1,
+            w - items[n - 1].weight,
+            level + 1
+        );
 
         include = {
             value: include.value + items[n - 1].value,
             items: [...include.items, n - 1]
         };
 
-        return include.value > exclude.value ? include : exclude;
+        node.classList.remove("active");
+
+        if (include.value > exclude.value) {
+            node.classList.add("selected");
+            return include;
+        } else {
+            return exclude;
+        }
     }
 
     const result = await helper(items.length, capacity);
@@ -330,11 +360,32 @@ async function visualizeGreedy(items, capacity) {
     });
 }
 
+
 async function visualizeBranchAndBound(items, capacity) {
     const output = document.getElementById("results-area");
 
+    output.innerHTML = `<div class="tree" id="tree"></div>`;
+    const tree = document.getElementById("tree");
+
     let maxValue = 0;
     let bestSet = [];
+
+    function createNode(level, weight, value, state = "") {
+        const node = document.createElement("div");
+        node.className = `node fade-in ${state}`;
+        node.style.marginLeft = `${level * 40}px`;
+
+        node.innerHTML = `
+            <div class="node-content">
+                <div class="node-level">Рівень ${level}</div>
+                <div>w: ${weight}</div>
+                <div>v: ${value}</div>
+            </div>
+        `;
+
+        tree.appendChild(node);
+        return node;
+    }
 
     function bound(level, weight, value) {
         let boundValue = value;
@@ -345,6 +396,9 @@ async function visualizeBranchAndBound(items, capacity) {
                 totalWeight += items[i].weight;
                 boundValue += items[i].value;
             } else {
+                boundValue +=
+                    (capacity - totalWeight) *
+                    (items[i].value / items[i].weight);
                 break;
             }
         }
@@ -354,29 +408,30 @@ async function visualizeBranchAndBound(items, capacity) {
 
     async function dfs(level, weight, value, chosen) {
 
-        output.innerHTML = `
-            <div class="result-box fade">
-                <p>Гілка: рівень ${level}</p>
-                <p>Вага: ${weight}, Цінність: ${value}</p>
-            </div>
-        `;
-
+        const node = createNode(level, weight, value, "active");
         await sleep(300);
 
         if (weight <= capacity && value > maxValue) {
             maxValue = value;
             bestSet = [...chosen];
+            node.classList.add("selected");
         }
 
-        if (level >= items.length) return;
+        if (level >= items.length) {
+            node.classList.remove("active");
+            return;
+        }
 
         let b = bound(level, weight, value);
 
         if (b < maxValue) {
-            output.innerHTML += `<p style="color:#ef4444">✂ Відсічення</p>`;
+            node.classList.remove("active");
+            node.classList.add("pruned");
             await sleep(300);
             return;
         }
+
+        node.classList.remove("active");
 
         await dfs(
             level + 1,
@@ -396,7 +451,24 @@ async function visualizeBranchAndBound(items, capacity) {
     await dfs(0, 0, 0, []);
 
     renderResult({
-        maxValue: maxValue,
+        maxValue,
         selected: bestSet
     });
+}
+
+function createNode(tree, level, data, state = "") {
+    const node = document.createElement("div");
+    node.className = `node fade-in ${state}`;
+    node.style.marginLeft = `${level * 40}px`;
+
+    node.innerHTML = `
+        <div class="node-content">
+            <div class="node-level">Рівень ${level}</div>
+            <div>w: ${data.weight}</div>
+            <div>v: ${data.value}</div>
+        </div>
+    `;
+
+    tree.appendChild(node);
+    return node;
 }
