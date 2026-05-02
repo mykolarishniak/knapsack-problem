@@ -38,14 +38,17 @@ startBtn.addEventListener("click", async () => {
         await visualizeBruteForce(items, capacity);
     } else if (currentTab === "recursive") {
         await visualizeRecursive(items, capacity);
-    } else {
+    }
+    else if (currentTab === "dp") {
+    await visualizeDP(items, capacity);
+}
+    else {
         document.getElementById("results-area").innerHTML =
             `<p></p>`;
     }
 });
 
 async function sleep(ms) {
-    //   return new Promise(resolve => setTimeout(resolve, ms / speedMultiplier));
       while (isPaused) {
         await new Promise(r => setTimeout(r, 100));
     }
@@ -152,7 +155,7 @@ function renderResult(result) {
 
     html += `</ul></div>`;
 
-    document.getElementById("results-area").innerHTML = html;
+    document.getElementById("results-area").innerHTML += html;
 }
 
 function parseItems() {
@@ -169,4 +172,120 @@ function parseItems() {
     }
 
     return items;
+}
+
+function clearHighlights() {
+    document.querySelectorAll("td").forEach(cell => {
+        cell.classList.remove("cell-highlight", "cell-active", "cell-selected");
+    });
+}
+
+async function visualizeDP(items, capacity) {
+    const n = items.length;
+    const output = document.getElementById("results-area");
+
+    let dp = Array.from({ length: n + 1 }, () =>
+        Array(capacity + 1).fill(0)
+    );
+
+    renderDPTable(dp);
+
+    for (let i = 1; i <= n; i++) {
+        for (let w = 0; w <= capacity; w++) {
+
+            highlightCell(i, w);
+
+            await sleep(200);
+
+            if (items[i - 1].weight > w) {
+                dp[i][w] = dp[i - 1][w];
+            } else {
+                dp[i][w] = Math.max(
+                    dp[i - 1][w],
+                    dp[i - 1][w - items[i - 1].weight] + items[i - 1].value
+                );
+            }
+
+            updateCell(i, w, dp[i][w]);
+
+            await sleep(100);
+        }
+    }
+
+    //     clearHighlights();
+    // let w = capacity;
+    // let selected = [];
+
+
+    // for (let i = n; i > 0; i--) {
+    //     if (dp[i][w] !== dp[i - 1][w]) {
+    //            highlightSelected(i, w);
+    //         selected.push(i - 1);
+    //         await sleep(300);
+    //         w -= items[i - 1].weight;
+    //     }
+    // }
+
+    clearHighlights(); // очищаємо старі підсвітки
+
+let w = capacity;
+let selected = [];
+
+for (let i = n; i > 0; i--) {
+
+    highlightSelected(i, w);
+
+    await sleep(300);
+
+    if (dp[i][w] !== dp[i - 1][w]) {
+        selected.push(i - 1);
+
+        w -= items[i - 1].weight;
+    }
+}
+
+    renderResult({
+        maxValue: dp[n][capacity],
+        selected: selected.reverse()
+    });
+}
+
+function renderDPTable(dp) {
+    let html = `<table id="dp-table">`;
+
+    for (let i = 0; i < dp.length; i++) {
+        html += `<tr>`;
+        for (let j = 0; j < dp[0].length; j++) {
+            html += `<td id="cell-${i}-${j}">${dp[i][j]}</td>`;
+        }
+        html += `</tr>`;
+    }
+
+    html += `</table>`;
+
+    document.getElementById("results-area").innerHTML = html;
+}
+
+function highlightCell(i, w) {
+    const cell = document.getElementById(`cell-${i}-${w}`);
+    if (cell) {
+        cell.classList.add("cell-active");
+    }
+}
+
+function updateCell(i, w, value) {
+    const cell = document.getElementById(`cell-${i}-${w}`);
+    if (cell) {
+        cell.textContent = value;
+        cell.classList.remove("cell-active");
+        cell.classList.add("cell-highlight");
+    }
+}
+
+function highlightSelected(i, w) {
+    const cell = document.getElementById(`cell-${i}-${w}`);
+    if (cell) {
+         cell.classList.remove("cell-highlight");
+        cell.classList.add("cell-selected");
+    }
 }

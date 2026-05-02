@@ -152,3 +152,32 @@ select {
 #resume-btn {
     background: #22c55e;
 }
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 4px;
+}
+
+td {
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    background: #1e293b;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.cell-active {
+    background: #6366f1 !important;
+}
+
+.cell-highlight {
+    background: #22d3ee !important;
+    color: black;
+}
+
+.cell-selected {
+    background: #10b981 !important;
+    color: black;
+}
